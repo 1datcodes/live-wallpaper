@@ -1,0 +1,21 @@
+.Clock {
+    text-align: center;
+}
+
+.Clock > div {
+    margin: 0;
+}
+
+.Date {
+    font-size: 0.9em;
+    font-weight: normal;
+}
+
+.Time {
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+.Clock h1, .Time, h1 {
+    margin: 0;
+}
