@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import '../styles/Clock.css';
 import fontList from '../assets/google-fonts.json';
 
+const key = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
+
 function Clock() {
     const [date, setDate] = useState(new Date());
     const [font, setFont] = useState('Roboto');

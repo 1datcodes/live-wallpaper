@@ -14,7 +14,7 @@ dist-ssr
 
 
 # API keys and secrets
-src/.env
+.env
 
 # Editor directories and files
 .vscode/*
