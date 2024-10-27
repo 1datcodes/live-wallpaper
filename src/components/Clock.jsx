@@ -8,6 +8,8 @@ function Clock() {
     const [date, setDate] = useState(new Date());
     const [font, setFont] = useState(localStorage.getItem('currentFont') || 'Roboto');
     const [fontList, setFontList] = useState({});
+    const [uploadedFonts, setUploadedFonts] = useState({});
+    const [hideFontPicker, setHideFontPicker] = useState(false);
     
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -48,28 +50,84 @@ function Clock() {
         return () => document.head.removeChild(link);
     }, [font]);
 
+    useEffect(() => {
+        const storedFonts = localStorage.getItem('uploadedFonts');
+        if (storedFonts) {
+            setUploadedFonts(JSON.parse(storedFonts));
+        }
+    }, []);
+
     const saveCurrentFont = (fontName) => {
         localStorage.setItem('currentFont', fontName);
         setFont(fontName);
     }
 
-    const fontOptions = Object.keys(fontList).map(fontName => (
-        <option key={fontName} value={fontName} style={{fontFamily: fontName}}>{fontName}</option>
+    const handleClick = () => {
+        setHideFontPicker(!hideFontPicker);
+    }
+
+    const fontOptions = [
+        ...Object.keys(uploadedFonts),
+        ...Object.keys(fontList)
+    ].map(fontName => (
+        <option key={fontName} value={fontName} style={{ fontFamily: fontName}}>{fontName}</option>
     ))
-    
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const fileInput = document.getElementById('upload');
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const fontName = file.name.split('.')[0];
+                const fontURL = e.target.result;
+
+                const newFontFace = new FontFace(fontName, `url(${fontURL})`);
+                newFontFace.load().then((loadedFont) => {
+                    document.fonts.add(loadedFont);
+                    setUploadedFonts((prevFonts) => {
+                        const updatedFonts = {
+                            ...prevFonts,
+                            [fontName] : { family: fontName, files: { regular: fontURL } }
+                        };
+                        localStorage.setItem('uploadedFonts', JSON.stringify(updatedFonts));
+                        return updatedFonts;
+                    });
+                }).catch((error) => {
+                    console.error("Error loading font: ", error);
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        alert('Font uploaded successfully!');
+    }
+
     return (
         <div className="Clock">
-            <div className="Date">
-                <h1 style={{fontFamily: font}}>{`${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`}</h1>
-            </div>
-            <div className="Time">
-                <h1 style={{fontFamily: font}}>{date.toLocaleTimeString().slice(0, date.toLocaleTimeString().length - 2)}</h1>
+            <div className="Display" onClick={handleClick}>
+                <div className="Date">
+                    <h1 style={{fontFamily: font}}>{`${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`}</h1>
+                </div>
+                <div className="Time">
+                    <h1 style={{fontFamily: font}}>{date.toLocaleTimeString().slice(0, date.toLocaleTimeString().length - 2)}</h1>
+                </div>
             </div>
 
-            <div className="Font-picker">
-                <select value={font} onChange={e => saveCurrentFont(e.target.value)}>
-                    {fontOptions}
-                </select>
+            <div className="Font-handler">
+                {hideFontPicker ? null :
+                    <div className="Font-picker">
+                        <select value={font} onChange={e => saveCurrentFont(e.target.value)}>
+                            {fontOptions}
+                        </select>
+                        <div className="Upload-font">
+                            <label htmlFor="upload">Upload font </label>
+                            <input type="file" id="upload" accept=".ttf, .otf" />
+                            <button onClick={handleSubmit}>Upload</button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     )
