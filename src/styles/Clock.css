@@ -6,6 +6,10 @@
     margin: 0;
 }
 
+.Display, .Display div, .Display div h1 {
+    transition: font-size 0.2s ease-in-out;
+}
+
 .Date {
     font-weight: normal;
 }
@@ -16,4 +20,30 @@
 
 .Clock h1, .Time, h1 {
     margin: 0;
+}
+
+.Font-size {
+    width: 100%;
+}
+
+.Font-size input {
+    appearance: none;
+    width: 50%;
+    height: 22px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+.Font-size > input:hover {
+    opacity: 1;
+}
+
+.Font-size input::-webkit-slider-thumb {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #575757;
+    cursor: pointer;
 }

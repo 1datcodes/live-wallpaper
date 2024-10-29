@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import '../styles/Clock.css';
-// import fontList from '../assets/google-fonts.json';
 
 const key = import.meta.env.VITE_GOOGLE_FONT_API_KEY;
 
@@ -160,12 +159,14 @@ function Clock() {
                         </div>
                         <div className="Font-size">
                             <div className="Date-font-size">
-                                <label htmlFor="date">Date font size</label>
-                                <input type="number" id="date" value={parseInt(fontSize.date)} onChange={changeFontSize} />
+                                <label htmlFor="date">Date font size: {parseInt(fontSize.date)}</label>
+                                <br />
+                                <input type="range" min="1" max="240" id="date" value={parseInt(fontSize.date)} onChange={changeFontSize} />
                             </div>
                             <div className="Time-font-size">
-                                <label htmlFor="time">Time font size</label>
-                                <input type="number" id="time" value={parseInt(fontSize.time)} onChange={changeFontSize} />
+                                <label htmlFor="time">Time font size: {parseInt(fontSize.time)}</label>
+                                <br />
+                                <input type="range" min="1" max="240" id="time" value={parseInt(fontSize.time)} onChange={changeFontSize} />
                             </div>
                         </div>
                     </div>
